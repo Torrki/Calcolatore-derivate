@@ -1,6 +1,8 @@
 /*! \file AlberoSintassi.h
  *  \brief File header per l'albero della sintassi dell'espressione simbolica
  */
+ 
+#include <stdlib.h>
 
 struct NodoFunzione;
 struct NodoOperatore;
@@ -39,5 +41,12 @@ typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
  *  \param n nodo radice dell'albero
  *  \param livello livello associato al nodo, default è 0
  */
+ 
+/*! \fn Nodo CreaAlbero(const char* funzioneSym)
+*  \brief metodo per creare l'albero dalla stringa simbolica 
+*
+*  \param funzioneSym stringa della funzione simbolica
+*/
 
 void StampaAlbero(Nodo n, unsigned livello);
+Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri);
