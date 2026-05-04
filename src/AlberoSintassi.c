@@ -4,7 +4,7 @@
 
 int operatore(char c);
 int prioritaOperatori(char uo, char o);
-const char* ordineOperatori=".@/*+-";
+const char* ordineOperatori=".@^/*+-";
 
 void StampaAlbero(Nodo n, unsigned livello){
 	if(n.nf != (struct NodoFunzione*)NULL){
@@ -216,6 +216,15 @@ const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice){
 					sprintf(stringaDerivata,"(%s)*%s",DerivataComposta,derivataOpDx);
 					free((void*)OpDx);
 					free((void*)DerivataComposta);
+					break;
+				case '^':
+					OpSx=AlberotoStr(radice.no->n1);
+					OpDx=AlberotoStr(radice.no->n2);
+					stringaDerivata=(char*)malloc(sizeof(char)*(dimSx+dimDx+3*strlen(OpSx)+2*strlen(OpDx)+29));
+					sprintf(stringaDerivata,"((%s)^(%s))*((%s)*ln(%s)+(%s)*((%s)/(%s)))",OpSx,OpDx,derivataOpDx,OpSx,OpDx,derivataOpSx,OpSx);
+					
+					free((void*)OpSx);
+					free((void*)OpDx);
 					break;
 			}
 			
