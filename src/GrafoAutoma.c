@@ -54,7 +54,6 @@ struct AutomaSintassi* CreaAutoma(){
 void CancellaAutoma(struct AutomaSintassi* a){
 	struct Stato* stato_tmp=NULL;
 	while(a->statoIniziale){
-		printf("Cancellato stato %c\n", a->statoIniziale->s);
 		stato_tmp=a->statoIniziale->successivo;
 		free((void*)a->statoIniziale->inputs);
 		free((void*)a->statoIniziale->statiSuccessivi);

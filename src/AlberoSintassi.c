@@ -1,7 +1,5 @@
 #include <AlberoSintassi.h>
-#include <GrafoAutoma.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 int operatore(char c);
@@ -24,6 +22,25 @@ void StampaAlbero(Nodo n, unsigned livello){
 	}else{
 		printf("Albero vuoto\n");
 	}
+}
+
+const char* AlberotoStr(Nodo n){
+	char* stringaFunzione=NULL;
+	if(n.nf != (struct NodoFunzione*)NULL){		
+		if(n.no->tipo=='o'){
+			const char* operandoSx=AlberotoStr(n.no->n1);
+			const char* operandoDx=AlberotoStr(n.no->n2);
+			
+			stringaFunzione=(char*)malloc(sizeof(char)*(strlen(operandoSx)+strlen(operandoDx+3)));
+			sprintf(stringaFunzione,"%s%c%s%c",operandoSx, n.no->op=='@' ? '(' : n.no->op, operandoDx, n.no->op=='@' ? ')' : '\0');
+			free((void*)operandoSx);
+			free((void*)operandoDx);
+		}else{
+			stringaFunzione=(char*)malloc(sizeof(char)*(strlen(n.nf->f)+1));
+			strcpy(stringaFunzione,n.nf->f);
+		}
+	}
+	return stringaFunzione;		
 }
 
 
@@ -150,9 +167,65 @@ void DeallocaAlbero(Nodo radice){
 	}
 }
 
-char* AnalizzaAlbero(Nodo radice){
+const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice){
 	char* stringaDerivata=NULL;
 	if(radice.no){
+		//Se il nodo radice è un operatore devo sostituire con la regola di derivazione e risolvere ricorsivamente gli operandi
+		if(radice.no->tipo=='o'){
+			//risolvo gli operandi
+			const char* derivataOpSx=AnalizzaAlbero(tabella,radice.no->n1);
+			const char* derivataOpDx=AnalizzaAlbero(tabella,radice.no->n2);
+			const char *OpDx, *OpSx;
+			size_t dimSx=strlen(derivataOpSx);
+			size_t dimDx=strlen(derivataOpDx);
+			
+			switch(radice.no->op){
+				case '+':
+					stringaDerivata=(char*)malloc(sizeof(char)*(dimSx+dimDx+2));
+					sprintf(stringaDerivata,"%s+%s",derivataOpSx,derivataOpDx);
+					break;
+				case '-':
+					stringaDerivata=(char*)malloc(sizeof(char)*(dimSx+dimDx+2));
+					sprintf(stringaDerivata,"%s-%s",derivataOpSx,derivataOpDx);
+					break;
+				case '*':
+					OpSx=AlberotoStr(radice.no->n1);
+					OpDx=AlberotoStr(radice.no->n2);
+					stringaDerivata=(char*)malloc(sizeof(char)*(dimSx+dimDx+strlen(OpSx)+strlen(OpDx)+16));
+					sprintf(stringaDerivata,"((%s)*(%s))+((%s)*(%s))",derivataOpSx,OpDx,OpSx,derivataOpDx);
+					
+					free((void*)OpSx);
+					free((void*)OpDx);
+					break;
+				case '/':
+					OpSx=AlberotoStr(radice.no->n1);
+					OpDx=AlberotoStr(radice.no->n2);
+					stringaDerivata=(char*)malloc(sizeof(char)*(dimSx+dimDx+strlen(OpSx)+strlen(OpDx)*2+24));
+					sprintf(stringaDerivata,"(((%s)*(%s))-((%s)*(%s)))/((%s)^2)",derivataOpSx,OpDx,OpSx,derivataOpDx,OpDx);
+					
+					free((void*)OpSx);
+					free((void*)OpDx);
+					break;
+				case '@':
+					OpDx=AlberotoStr(radice.no->n2);
+					char* DerivataComposta=(char*)malloc(sizeof(char)*(dimSx+strlen(OpDx)-1));
+					sprintf(DerivataComposta,derivataOpSx,OpDx);
+					
+					stringaDerivata=(char*)malloc(sizeof(char)*(strlen(DerivataComposta)+dimDx+4));
+					
+					sprintf(stringaDerivata,"(%s)*%s",DerivataComposta,derivataOpDx);
+					free((void*)OpDx);
+					free((void*)DerivataComposta);
+					break;
+			}
+			
+			free((void*)derivataOpSx);
+			free((void*)derivataOpDx);
+		}else{
+			const char* df=OttieniDerivata(tabella,radice.nf->f);
+			stringaDerivata=(char*)malloc(sizeof(char)*(strlen(df)+1));
+			strcpy(stringaDerivata,df);
+		}
 	}
 	return stringaDerivata;
 }

@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <AlberoSintassi.h>
-#include <GrafoAutoma.h>
-#include <TabellaDerivate.h>
 
 int operatore(char c);
 int prioritaOperatori(char uo, char o);
@@ -41,6 +39,9 @@ int main(int argc, char* argv[]){
 		//la costruzione dell'albero avviene senza errori di sintassi
 		Nodo radiceAlberoSintassi=CreaAlbero(Automa,stringaAlbero,&caratteriProcessati);
 		StampaAlbero(radiceAlberoSintassi,0);
+		
+		const char* derivataFunzione=AnalizzaAlbero(TabellaDerivate,radiceAlberoSintassi);
+		printf("\n\nLa derivata: %s\n", derivataFunzione);
 		
 		DeallocaAlbero(radiceAlberoSintassi);
 	}else{

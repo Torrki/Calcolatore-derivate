@@ -54,26 +54,19 @@ const char* OttieniDerivata(struct CoppiaDerivata* tabella, const char* f){
 struct CoppiaDerivata* CreaTabella(){
 
 	struct CoppiaDerivata* tabellaDerivate=NULL;
-	//operatori
-	AggiungiDerivata(&tabellaDerivate,"+","(%s+%s)");
-	AggiungiDerivata(&tabellaDerivate,"-","(%s-%s)");
-	AggiungiDerivata(&tabellaDerivate,"*","(%s*%s)+(%s*%s)");
-	AggiungiDerivata(&tabellaDerivate,"/","((%s*%s)-(%s*%s))/(%s^2)");
-	AggiungiDerivata(&tabellaDerivate,"@","%s(%s)*%s");
 	
 	//funzioni
 	AggiungiDerivata(&tabellaDerivate,"x","1");
-	AggiungiDerivata(&tabellaDerivate,"exp","exp");
-	AggiungiDerivata(&tabellaDerivate,"ln","1/x");
-	AggiungiDerivata(&tabellaDerivate,"sin","cos");
-	AggiungiDerivata(&tabellaDerivate,"cos","-sin");
+	AggiungiDerivata(&tabellaDerivate,"exp","exp(%s)");
+	AggiungiDerivata(&tabellaDerivate,"ln","1/(%s)");
+	AggiungiDerivata(&tabellaDerivate,"sin","cos(%s)");
+	AggiungiDerivata(&tabellaDerivate,"cos","-sin(%s)");
 	return tabellaDerivate;
 }
 
 void CancellaTabella(struct CoppiaDerivata* tabella){
 	while(tabella){
 		struct CoppiaDerivata* successivo=tabella->succ;
-		printf("Cancellata voce di %s\n", tabella->chiave);
 		free((void*)tabella->chiave);
 		free((void*)tabella->valore);
 		free((void*)tabella);

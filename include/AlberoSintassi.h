@@ -2,8 +2,9 @@
  *  \brief File header per l'albero della sintassi dell'espressione simbolica
  */
  
-#include <stdlib.h>
 #include <GrafoAutoma.h>
+#include <TabellaDerivate.h>
+#include <stdlib.h>
 
 struct NodoFunzione;
 struct NodoOperatore;
@@ -66,4 +67,5 @@ typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
 void StampaAlbero(Nodo n, unsigned livello);
 Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numeroCaratteri);
 void DeallocaAlbero(Nodo radice);
-char* AnalizzaAlbero(Nodo radice);
+const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice);
+const char* AlberotoStr(Nodo n);
