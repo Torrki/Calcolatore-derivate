@@ -83,126 +83,191 @@ $(document).ready(function() { init_codefold(0); });
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &lt;<a class="code" href="AlberoSintassi_8h.html">AlberoSintassi.h</a>&gt;</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;string.h&gt;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keywordtype">int</span> operatore(<span class="keywordtype">char</span> c);</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keywordtype">int</span> prioritaOperatori(<span class="keywordtype">char</span> uo, <span class="keywordtype">char</span> o);</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">const</span> <span class="keywordtype">char</span>* ordineOperatori=<span class="stringliteral">&quot;./*+-&quot;</span>;</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="foldopen" id="foldopen00010" data-start="{" data-end="}">
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="AlberoSintassi_8h.html#acb07e12e9aabe8098506c682cf97f263">   10</a></span><span class="keywordtype">void</span> StampaAlbero(<a class="code hl_union" href="unionNodo.html">Nodo</a> n, <span class="keywordtype">unsigned</span> livello){</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0; i &lt; livello; i++){</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>        printf(i == livello-1 ? <span class="stringliteral">&quot;|&quot;</span> : <span class="stringliteral">&quot;-&quot;</span>);</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    }</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordflow">if</span>(n.no-&gt;tipo==<span class="charliteral">&#39;o&#39;</span>){</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        printf(<span class="stringliteral">&quot;%c\n&quot;</span>, n.no-&gt;op);</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        StampaAlbero(n.no-&gt;n1,livello+1);</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        StampaAlbero(n.no-&gt;n2,livello+1);</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    }<span class="keywordflow">else</span>{</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        printf(<span class="stringliteral">&quot;%s\n&quot;</span>, n.nf-&gt;f);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    }</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>}</div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;<a class="code" href="GrafoAutoma_8h.html">GrafoAutoma.h</a>&gt;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keywordtype">int</span> operatore(<span class="keywordtype">char</span> c);</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keywordtype">int</span> prioritaOperatori(<span class="keywordtype">char</span> uo, <span class="keywordtype">char</span> o);</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">const</span> <span class="keywordtype">char</span>* ordineOperatori=<span class="stringliteral">&quot;.@/*+-&quot;</span>;</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="foldopen" id="foldopen00011" data-start="{" data-end="}">
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="AlberoSintassi_8h.html#acb07e12e9aabe8098506c682cf97f263">   11</a></span><span class="keywordtype">void</span> StampaAlbero(<a class="code hl_union" href="unionNodo.html">Nodo</a> n, <span class="keywordtype">unsigned</span> livello){</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keywordflow">if</span>(n.nf != (<span class="keyword">struct</span> <a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>*)NULL){</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0; i &lt; livello; i++){</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>            printf(i == livello-1 ? <span class="stringliteral">&quot;|&quot;</span> : <span class="stringliteral">&quot;-&quot;</span>);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        }</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        <span class="keywordflow">if</span>(n.no-&gt;tipo==<span class="charliteral">&#39;o&#39;</span>){</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>            printf(<span class="stringliteral">&quot;%c\n&quot;</span>, n.no-&gt;op);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>            StampaAlbero(n.no-&gt;n1,livello+1);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>            StampaAlbero(n.no-&gt;n2,livello+1);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        }<span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            printf(<span class="stringliteral">&quot;%s\n&quot;</span>, n.nf-&gt;f);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        }</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    }<span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        printf(<span class="stringliteral">&quot;Albero vuoto\n&quot;</span>);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    }</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>}</div>
 </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="foldopen" id="foldopen00025" data-start="{" data-end="}">
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="AlberoSintassi_8h.html#a969b35bc09beb87710f4a233b81d1818">   25</a></span><a class="code hl_union" href="unionNodo.html">Nodo</a> CreaAlbero(<span class="keyword">const</span> <span class="keywordtype">char</span>* funzioneSym){</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="comment">//inizializzazione per la costruzione dell&#39;albero</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <a class="code hl_union" href="unionNodo.html">Nodo</a> nodoCorrente,nodoRadice;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keywordtype">int</span> livello_max=0, livello=0;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    nodoCorrente.no=NULL;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    nodoRadice.no=NULL;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordtype">char</span>* bufferStringa=(<span class="keywordtype">char</span>*)calloc(100,<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">char</span> ultimoOperatore=<span class="charliteral">&#39;.&#39;</span>; <span class="comment">//operatore a massima priorità</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">unsigned</span> i=0;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="comment">//processamento della stringa</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordflow">while</span>(*funzioneSym){</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <span class="keywordtype">char</span> carattere=*funzioneSym;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="comment">//se il carattere letto è una funzione o un operatore</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="keywordflow">if</span>(operatore(carattere)){</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            bufferStringa[i]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            <a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>* funzioneOp=(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>));</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            <a class="code hl_struct" href="structNodoOperatore.html">NodoOperatore</a>* nuovoOp=(<a class="code hl_struct" href="structNodoOperatore.html">NodoOperatore</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structNodoOperatore.html">NodoOperatore</a>));</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            funzioneOp-&gt;tipo=<span class="charliteral">&#39;f&#39;</span>;</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            funzioneOp-&gt;f=(<span class="keywordtype">char</span>*)malloc(strlen(bufferStringa)+1);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            strcpy(funzioneOp-&gt;f, (<span class="keyword">const</span> <span class="keywordtype">char</span> *)bufferStringa);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            nuovoOp-&gt;tipo=<span class="charliteral">&#39;o&#39;</span>;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            nuovoOp-&gt;op=carattere;</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            <span class="comment">//stabilire la priorità per la costruzione dell&#39;albero</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            <span class="keywordflow">if</span>(prioritaOperatori(ultimoOperatore,carattere)){   <span class="comment">//salgo</span></div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>                <span class="keywordflow">if</span>(nodoCorrente.no == NULL){    <span class="comment">//primo passo di costruzione</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>                    nuovoOp-&gt;n1.nf=funzioneOp;</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>                }<span class="keywordflow">else</span>{  <span class="comment">//passi successivi</span></div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                    nodoCorrente.no-&gt;n2.nf=funzioneOp;</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                    nuovoOp-&gt;n1.no=nodoCorrente.no;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                }</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                livello++;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            }<span class="keywordflow">else</span>{  <span class="comment">//scendo</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                nodoCorrente.no-&gt;n2.no=nuovoOp;</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>                nuovoOp-&gt;n1.nf=funzioneOp;</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>                </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>                livello--;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            }</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            nodoCorrente.no=nuovoOp;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            ultimoOperatore=carattere;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            <span class="keywordflow">if</span>(livello &gt; livello_max) {</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                nodoRadice=nodoCorrente;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                livello_max=livello;</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            }</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            <span class="comment">//torno a inizio buffer</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            i=0;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        }<span class="keywordflow">else</span> <span class="keywordflow">if</span>(carattere == <span class="charliteral">&#39;(&#39;</span> || carattere == <span class="charliteral">&#39;)&#39;</span>){</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>            </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        }<span class="keywordflow">else</span>{</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            bufferStringa[i]=carattere;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            i++;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        }</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        funzioneSym++;</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    }</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="comment">//lettura ultima funzione</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    bufferStringa[i]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>* ultimaFunzione=(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>));</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    ultimaFunzione-&gt;tipo=<span class="charliteral">&#39;f&#39;</span>;</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    ultimaFunzione-&gt;f=(<span class="keywordtype">char</span>*)malloc(strlen(bufferStringa)+1);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    strcpy(ultimaFunzione-&gt;f, (<span class="keyword">const</span> <span class="keywordtype">char</span> *)bufferStringa);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordflow">if</span>(livello_max==0){ <span class="comment">//se non ho mai incontrato un operatore</span></div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        nodoRadice.nf=ultimaFunzione;</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    }<span class="keywordflow">else</span>{  <span class="comment">//completo l&#39;ultimo operatore</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        nodoCorrente.no-&gt;n2.nf=ultimaFunzione;</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordflow">return</span> nodoRadice;</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>}</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><a class="code hl_union" href="unionNodo.html">Nodo</a> CreaAlbero(<span class="keyword">const</span> <span class="keywordtype">char</span>* funzioneSym, <span class="keywordtype">size_t</span>* numeroCaratteri){</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="comment">//inizializzazione per la costruzione dell&#39;albero</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <a class="code hl_union" href="unionNodo.html">Nodo</a> nodoCorrente,nodoRadice,sottoAlberoParentesi;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">int</span> livello_max=0, livello=0;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">size_t</span> caratteriProcessati=0, caratteriSottoalbero=0;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    nodoCorrente.no=NULL;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    nodoRadice.no=NULL;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    sottoAlberoParentesi.no=NULL;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">char</span>* bufferStringa=(<span class="keywordtype">char</span>*)malloc(100*<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordtype">char</span> ultimoOperatore=<span class="charliteral">&#39;.&#39;</span>; <span class="comment">//operatore a massima priorità</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">char</span> nonFineStringa=1;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">unsigned</span> i=0;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">char</span> statoAutomaFunzioni=<span class="charliteral">&#39;0&#39;</span>;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordtype">char</span> carattere=*funzioneSym;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    ResetAutoma();</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="comment">//processamento della stringa</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordflow">while</span>(nonFineStringa){</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        carattere=*funzioneSym;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        printf(<span class="stringliteral">&quot;carattere: %c\nstato automa: %c\n&quot;</span>,carattere,statoAutomaFunzioni);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="comment">//char statoAutomaFunzioni=StatoCorrenteAutoma();</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="comment">//se il carattere letto è un operatore o una parentesi per la composizione</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keywordflow">if</span>(operatore(carattere) || statoAutomaFunzioni==STATO_COMPOSIZIONE){</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            bufferStringa[i]=<span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            <span class="keywordtype">char</span> op=statoAutomaFunzioni==STATO_COMPOSIZIONE ? <span class="charliteral">&#39;@&#39;</span> : carattere;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <a class="code hl_struct" href="structNodoOperatore.html">NodoOperatore</a>* nuovoOp=(<a class="code hl_struct" href="structNodoOperatore.html">NodoOperatore</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structNodoOperatore.html">NodoOperatore</a>));           </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <a class="code hl_union" href="unionNodo.html">Nodo</a> funzioneOp;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            <span class="keywordflow">if</span>(sottoAlberoParentesi.no == NULL){ <span class="comment">//se non ci sono state parentesi a separare l&#39;operatore</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>                funzioneOp.nf=(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>));</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                funzioneOp.nf-&gt;tipo=<span class="charliteral">&#39;f&#39;</span>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>                funzioneOp.nf-&gt;f=(<span class="keywordtype">char</span>*)malloc(strlen(bufferStringa)+1);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>                strcpy(funzioneOp.nf-&gt;f, (<span class="keyword">const</span> <span class="keywordtype">char</span> *)bufferStringa);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            }<span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                funzioneOp=sottoAlberoParentesi;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                sottoAlberoParentesi.no=NULL;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            }</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            nuovoOp-&gt;tipo=<span class="charliteral">&#39;o&#39;</span>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            nuovoOp-&gt;op=op;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            printf(<span class="stringliteral">&quot;%s\n&quot;</span>, bufferStringa);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="comment">//stabilire la priorità per la costruzione dell&#39;albero</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <span class="keywordflow">if</span>(prioritaOperatori(ultimoOperatore,op)){  <span class="comment">//salgo</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                <span class="keywordflow">if</span>(nodoCorrente.no == NULL){    <span class="comment">//primo passo di costruzione</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                    nuovoOp-&gt;n1=funzioneOp;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>                }<span class="keywordflow">else</span>{  <span class="comment">//passi successivi</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>                    nodoCorrente.no-&gt;n2=funzioneOp;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>                    nuovoOp-&gt;n1.no=nodoCorrente.no;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                }</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>                </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>                livello++;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>            }<span class="keywordflow">else</span>{  <span class="comment">//scendo</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                nodoCorrente.no-&gt;n2.no=nuovoOp;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                nuovoOp-&gt;n1=funzioneOp;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>                livello--;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            }</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            nodoCorrente.no=nuovoOp;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            ultimoOperatore=op;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>            <span class="keywordflow">if</span>(livello &gt; livello_max) {</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                nodoRadice=nodoCorrente;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                livello_max=livello;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            }</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            <span class="comment">//torno a inizio buffer</span></div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            i=0;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        }<span class="keywordflow">else</span> <span class="keywordflow">if</span>(carattere == <span class="charliteral">&#39;(&#39;</span> &amp;&amp; statoAutomaFunzioni == STATO_INIZIALE){</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="comment">//Il contenuto tra parentesi ha maggiore priorità e bisogna creare un albero specifico</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            printf(<span class="stringliteral">&quot;----sottoalbero----\n&quot;</span>);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>            sottoAlberoParentesi=CreaAlbero(funzioneSym+1,&amp;caratteriSottoalbero);</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            printf(<span class="stringliteral">&quot;----fine sottoalbero----\n&quot;</span>);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            ResetAutoma(); <span class="comment">//Per tornare allo stato 0</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        }<span class="keywordflow">else</span> <span class="keywordflow">if</span>(carattere==<span class="charliteral">&#39;\n&#39;</span> || carattere==<span class="charliteral">&#39;)&#39;</span>){ <span class="comment">//fine del ciclo</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="comment">//lettura ultima funzione</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <a class="code hl_union" href="unionNodo.html">Nodo</a> ultimaFunzione;</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            <span class="keywordflow">if</span>(sottoAlberoParentesi.no == NULL){ <span class="comment">//se non ci sono state parentesi a separare l&#39;operatore</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                bufferStringa[i]=<span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                ultimaFunzione.nf=(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structNodoFunzione.html">NodoFunzione</a>));</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                ultimaFunzione.nf-&gt;tipo=<span class="charliteral">&#39;f&#39;</span>;</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                ultimaFunzione.nf-&gt;f=(<span class="keywordtype">char</span>*)malloc(strlen(bufferStringa)+1);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                strcpy(ultimaFunzione.nf-&gt;f, (<span class="keyword">const</span> <span class="keywordtype">char</span> *)bufferStringa);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            }<span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                ultimaFunzione=sottoAlberoParentesi;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                sottoAlberoParentesi.no=NULL;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            }</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            <span class="keywordflow">if</span>(livello_max==0){ <span class="comment">//se non ho mai incontrato un operatore</span></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>                nodoRadice=ultimaFunzione;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            }<span class="keywordflow">else</span>{  <span class="comment">//completo l&#39;ultimo operatore</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>                nodoCorrente.no-&gt;n2=ultimaFunzione;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            }</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            *numeroCaratteri=caratteriProcessati;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            nonFineStringa=0;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        }<span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            bufferStringa[i]=carattere;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            i++;                </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        }</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        </div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        <span class="comment">//faccio avanzare l&#39;automa e conto tutti i caratteri processati</span></div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        <span class="keywordflow">if</span>(statoAutomaFunzioni != STATO_COMPOSIZIONE){  <span class="comment">//if necessario per trattare come sottoalbero l&#39;argomento delle funzioni</span></div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            funzioneSym += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            caratteriProcessati += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        }</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>        <span class="keywordtype">char</span> res=InputAutoma(carattere);</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        statoAutomaFunzioni = res &gt;= 0 ? res : statoAutomaFunzioni;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    }</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keywordflow">return</span> nodoRadice;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>}</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
+<div class="foldopen" id="foldopen00145" data-start="{" data-end="}">
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno"><a class="line" href="AlberoSintassi_8h.html#a2e238b4ecc25796b0ffaae95e1266611">  145</a></span><span class="keywordtype">void</span> DeallocaAlbero(<a class="code hl_union" href="unionNodo.html">Nodo</a> radice){</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordflow">if</span>(radice.no){</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        <span class="keywordflow">if</span>(radice.no-&gt;tipo==<span class="charliteral">&#39;o&#39;</span>){</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>            DeallocaAlbero(radice.no-&gt;n1);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            DeallocaAlbero(radice.no-&gt;n2);</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        }<span class="keywordflow">else</span>{  <span class="comment">//dealloco la funzione</span></div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>            free(radice.nf-&gt;f);</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        }</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        free((<span class="keywordtype">void</span>*)radice.no);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    }</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>}</div>
 </div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="keywordtype">int</span> operatore(<span class="keywordtype">char</span> c){</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">return</span> (c==<span class="charliteral">&#39;+&#39;</span>) | (c==<span class="charliteral">&#39;-&#39;</span>) | (c==<span class="charliteral">&#39;*&#39;</span>) | (c==<span class="charliteral">&#39;/&#39;</span>);</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="keywordtype">int</span> prioritaOperatori(<span class="keywordtype">char</span> uo, <span class="keywordtype">char</span> o){</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keywordtype">unsigned</span> pos_uo=0,pos_o=0;</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keywordflow">for</span>(<span class="keywordtype">long</span> <span class="keywordtype">unsigned</span> i=0; i &lt; strlen(ordineOperatori); i++){</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">if</span>(uo==ordineOperatori[i]) pos_uo=i;</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">if</span>(o==ordineOperatori[i]) pos_o=i;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    }</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="keywordflow">return</span> pos_uo &lt; pos_o;</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>}</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
+<div class="foldopen" id="foldopen00157" data-start="{" data-end="}">
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno"><a class="line" href="AlberoSintassi_8h.html#a59465dc6218b6d9cc5581aebfb30daef">  157</a></span><span class="keywordtype">char</span>* AnalizzaAlbero(<a class="code hl_union" href="unionNodo.html">Nodo</a> radice){</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keywordtype">char</span>* stringaDerivata=NULL;</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="keywordflow">if</span>(radice.no){</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    }</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keywordflow">return</span> stringaDerivata;</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>}</div>
+</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="keywordtype">int</span> operatore(<span class="keywordtype">char</span> c){</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="keywordflow">return</span> strchr(ordineOperatori,c) != NULL;</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>}</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="keywordtype">int</span> prioritaOperatori(<span class="keywordtype">char</span> uo, <span class="keywordtype">char</span> o){</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <span class="keywordtype">unsigned</span> pos_uo=0,pos_o=0;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    <span class="keywordflow">for</span>(<span class="keywordtype">long</span> <span class="keywordtype">unsigned</span> i=0; i &lt; strlen(ordineOperatori); i++){</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        <span class="keywordflow">if</span>(uo==ordineOperatori[i]) pos_uo=i;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        <span class="keywordflow">if</span>(o==ordineOperatori[i]) pos_o=i;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    }</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <span class="keywordflow">return</span> pos_uo &lt; pos_o;</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>}</div>
 <div class="ttc" id="aAlberoSintassi_8h_html"><div class="ttname"><a href="AlberoSintassi_8h.html">AlberoSintassi.h</a></div><div class="ttdoc">File header per l'albero della sintassi dell'espressione simbolica.</div></div>
-<div class="ttc" id="astructNodoFunzione_html"><div class="ttname"><a href="structNodoFunzione.html">NodoFunzione</a></div><div class="ttdoc">Nodo per rappresentare una funzione.</div><div class="ttdef"><b>Definition</b> <a href="AlberoSintassi_8h_source.html#l00027">AlberoSintassi.h:27</a></div></div>
-<div class="ttc" id="astructNodoOperatore_html"><div class="ttname"><a href="structNodoOperatore.html">NodoOperatore</a></div><div class="ttdoc">Nodo per rappresentare un operatore.</div><div class="ttdef"><b>Definition</b> <a href="AlberoSintassi_8h_source.html#l00018">AlberoSintassi.h:18</a></div></div>
-<div class="ttc" id="aunionNodo_html"><div class="ttname"><a href="unionNodo.html">Nodo</a></div><div class="ttdoc">Unione per rappresentare il tipo generico del nodo.</div><div class="ttdef"><b>Definition</b> <a href="AlberoSintassi_8h_source.html#l00011">AlberoSintassi.h:11</a></div></div>
+<div class="ttc" id="aGrafoAutoma_8h_html"><div class="ttname"><a href="GrafoAutoma_8h.html">GrafoAutoma.h</a></div><div class="ttdoc">File header per l'automa delle funzioni.</div></div>
+<div class="ttc" id="astructNodoFunzione_html"><div class="ttname"><a href="structNodoFunzione.html">NodoFunzione</a></div><div class="ttdoc">Nodo per rappresentare una funzione.</div><div class="ttdef"><b>Definition</b> <a href="AlberoSintassi_8h_source.html#l00029">AlberoSintassi.h:29</a></div></div>
+<div class="ttc" id="astructNodoOperatore_html"><div class="ttname"><a href="structNodoOperatore.html">NodoOperatore</a></div><div class="ttdoc">Nodo per rappresentare un operatore.</div><div class="ttdef"><b>Definition</b> <a href="AlberoSintassi_8h_source.html#l00020">AlberoSintassi.h:20</a></div></div>
+<div class="ttc" id="aunionNodo_html"><div class="ttname"><a href="unionNodo.html">Nodo</a></div><div class="ttdoc">Unione per rappresentare il tipo generico del nodo.</div><div class="ttdef"><b>Definition</b> <a href="AlberoSintassi_8h_source.html#l00013">AlberoSintassi.h:13</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

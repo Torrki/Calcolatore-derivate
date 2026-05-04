@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['creaalbero_0',['CreaAlbero',['../AlberoSintassi_8h.html#a969b35bc09beb87710f4a233b81d1818',1,'AlberoSintassi.c']]]
+  ['analizzaalbero_0',['AnalizzaAlbero',['../AlberoSintassi_8h.html#a59465dc6218b6d9cc5581aebfb30daef',1,'AlberoSintassi.c']]]
 ];

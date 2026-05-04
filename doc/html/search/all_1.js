@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['creaalbero_0',['CreaAlbero',['../AlberoSintassi_8h.html#a969b35bc09beb87710f4a233b81d1818',1,'AlberoSintassi.c']]]
+  ['cancellatabella_0',['CancellaTabella',['../TabellaDerivate_8h.html#a9c3ac96440ba110d64c1d43a290f22ef',1,'TabellaDerivate.c']]],
+  ['coppiaderivata_1',['CoppiaDerivata',['../structCoppiaDerivata.html',1,'']]],
+  ['creaautoma_2',['CreaAutoma',['../GrafoAutoma_8h.html#a595a6aabd2b6a362a723a7923e560286',1,'GrafoAutoma.c']]],
+  ['creatabella_3',['CreaTabella',['../TabellaDerivate_8h.html#a7d26a963f9db91eb2478fdd211ac2c90',1,'TabellaDerivate.c']]]
 ];

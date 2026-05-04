@@ -28,7 +28,7 @@ LDFLAGS := $(foreach d,$(LIB_DIRS),-L$(d)) \
 # Construct include flags
 IFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i))
 
-CFLAGS  := -Wall -Wextra -O2 -std=c11 $(IFLAGS) -D _POSIX_C_SOURCE=200809L
+CFLAGS  := -Wall -Wextra -O2 -std=c11 $(IFLAGS) -D _POSIX_C_SOURCE=200809L -g
 
 ###############################################################################
 # Source and Object Files

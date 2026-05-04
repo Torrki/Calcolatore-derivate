@@ -3,6 +3,7 @@
  */
  
 #include <stdlib.h>
+#include <GrafoAutoma.h>
 
 struct NodoFunzione;
 struct NodoOperatore;
@@ -46,7 +47,23 @@ typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
 *  \brief metodo per creare l'albero dalla stringa simbolica 
 *
 *  \param funzioneSym stringa della funzione simbolica
+*	 \return torna il nodo radice dell'albero della sintassi
+*/
+
+/*! \fn void DeallocaAlbero(Nodo radice)
+*  \brief metodo per deallocare l'albero della stringa simbolica 
+*
+*  \param radice nodo radice dell'albero
+*/
+
+/*! \fn char* AnalizzaAlbero(Nodo radice)
+*  \brief metodo per analizzare l'albero della sintassi
+*
+*  \param radice nodo radice dell'albero
+*	 \return torna una stringa che contiene il risultato dell'operazione di derivazione
 */
 
 void StampaAlbero(Nodo n, unsigned livello);
-Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri);
+Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numeroCaratteri);
+void DeallocaAlbero(Nodo radice);
+char* AnalizzaAlbero(Nodo radice);

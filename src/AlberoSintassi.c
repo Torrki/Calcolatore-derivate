@@ -1,11 +1,12 @@
 #include <AlberoSintassi.h>
+#include <GrafoAutoma.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 int operatore(char c);
 int prioritaOperatori(char uo, char o);
-const char* ordineOperatori="./*+-";
+const char* ordineOperatori=".@/*+-";
 
 void StampaAlbero(Nodo n, unsigned livello){
 	if(n.nf != (struct NodoFunzione*)NULL){
@@ -21,12 +22,12 @@ void StampaAlbero(Nodo n, unsigned livello){
 			printf("%s\n", n.nf->f);
 		}
 	}else{
-		printf("Indirizzo dell'albero da stampare NULL\n");
+		printf("Albero vuoto\n");
 	}
 }
 
 
-Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri){
+Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numeroCaratteri){
 	//inizializzazione per la costruzione dell'albero
 	Nodo nodoCorrente,nodoRadice,sottoAlberoParentesi;
 	int livello_max=0, livello=0;
@@ -34,20 +35,26 @@ Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri){
 	nodoCorrente.no=NULL;
 	nodoRadice.no=NULL;
 	sottoAlberoParentesi.no=NULL;
-	char statoSintassi='f';	//variabile di stato per alternare la lettura tra funzioni e operatori
 	
-	char* bufferStringa=(char*)calloc(100,sizeof(char));
+	char* bufferStringa=(char*)malloc(100*sizeof(char));
 	char ultimoOperatore='.'; //operatore a massima priorità
-	char condizioneCiclo=1; //la condizione del ciclo è se non ci sono stati errori di sintassi o fine della stringa
+	char nonFineStringa=1;
 	unsigned i=0;
-		
+	char statoAutomaFunzioni='0';
+	char carattere=*funzioneSym;
+	
+	ResetAutoma(a);
+	
 	//processamento della stringa
-	while(condizioneCiclo){
-		char carattere=*funzioneSym;
+	while(nonFineStringa){
+		carattere=*funzioneSym;
+		//char statoAutomaFunzioni=StatoCorrenteAutoma();
 		
-		//se il carattere letto è una funzione o un operatore
-		if(statoSintassi == 'o' && operatore(carattere)){
+		//se il carattere letto è un operatore o una parentesi per la composizione
+		if(operatore(carattere) || statoAutomaFunzioni==STATO_COMPOSIZIONE){
 			bufferStringa[i]='\0';
+			char op=statoAutomaFunzioni==STATO_COMPOSIZIONE ? '@' : carattere;
+			
 			NodoOperatore* nuovoOp=(NodoOperatore*)malloc(sizeof(NodoOperatore));			
 			Nodo funzioneOp;
 			if(sottoAlberoParentesi.no == NULL){ //se non ci sono state parentesi a separare l'operatore
@@ -60,10 +67,10 @@ Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri){
 				sottoAlberoParentesi.no=NULL;
 			}
 			nuovoOp->tipo='o';
-			nuovoOp->op=carattere;
+			nuovoOp->op=op;
 			
 			//stabilire la priorità per la costruzione dell'albero
-			if(prioritaOperatori(ultimoOperatore,carattere)){	//salgo
+			if(prioritaOperatori(ultimoOperatore,op)){	//salgo
 				if(nodoCorrente.no == NULL){	//primo passo di costruzione
 					nuovoOp->n1=funzioneOp;
 				}else{	//passi successivi
@@ -79,7 +86,7 @@ Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri){
 				livello--;
 			}
 			nodoCorrente.no=nuovoOp;
-			ultimoOperatore=carattere;
+			ultimoOperatore=op;
 			
 			if(livello > livello_max) {
 				nodoRadice=nodoCorrente;
@@ -87,13 +94,12 @@ Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri){
 			}
 			
 			//torno a inizio buffer
-			statoSintassi='f';
 			i=0;
-		}else if(statoSintassi == 'f' && carattere == '('){
+		}else if(carattere == '(' && statoAutomaFunzioni == STATO_INIZIALE){
 			//Il contenuto tra parentesi ha maggiore priorità e bisogna creare un albero specifico
-			sottoAlberoParentesi=CreaAlbero(funzioneSym+1,&caratteriSottoalbero);
-			statoSintassi='o';
-		}else if(statoSintassi == 'o' && (*funzioneSym=='\n' || *funzioneSym==')') ){ //fine del ciclo
+			sottoAlberoParentesi=CreaAlbero(a,funzioneSym+1,&caratteriSottoalbero);
+			ResetAutoma(a); //Per tornare allo stato 0
+		}else if(carattere=='\n' || carattere==')'){ //fine del ciclo
 			//lettura ultima funzione
 			Nodo ultimaFunzione;
 			if(sottoAlberoParentesi.no == NULL){ //se non ci sono state parentesi a separare l'operatore
@@ -114,25 +120,45 @@ Nodo CreaAlbero(const char* funzioneSym, size_t* numeroCaratteri){
 			}
 			
 			*numeroCaratteri=caratteriProcessati;
-			condizioneCiclo=0;
-		}else if(statoSintassi == 'f' && !operatore(carattere)){
-			bufferStringa[i]=carattere;
-			i++;
-			statoSintassi='o';			
+			nonFineStringa=0;
 		}else{
-			printf("Errore nella sintassi della funzione al carattere %ld\n", caratteriProcessati+1);
-			condizioneCiclo=0;
-			nodoRadice.nf=(struct NodoFunzione*)NULL;
+			bufferStringa[i]=carattere;
+			i++;				
 		}
-		funzioneSym += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;
-		caratteriProcessati += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;
+		
+		//faccio avanzare l'automa e conto tutti i caratteri processati
+		if(statoAutomaFunzioni != STATO_COMPOSIZIONE){	//if necessario per trattare come sottoalbero l'argomento delle funzioni
+			funzioneSym += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;
+			caratteriProcessati += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;
+		}
+		char res=InputAutoma(a,carattere);
+		statoAutomaFunzioni = res >= 0 ? res : statoAutomaFunzioni;
 	}
 	
 	return nodoRadice;
 }
 
+void DeallocaAlbero(Nodo radice){
+	if(radice.no){
+		if(radice.no->tipo=='o'){
+			DeallocaAlbero(radice.no->n1);
+			DeallocaAlbero(radice.no->n2);
+		}else{	//dealloco la funzione
+			free(radice.nf->f);
+		}
+		free((void*)radice.no);
+	}
+}
+
+char* AnalizzaAlbero(Nodo radice){
+	char* stringaDerivata=NULL;
+	if(radice.no){
+	}
+	return stringaDerivata;
+}
+
 int operatore(char c){
-	return (c==ordineOperatori[1]) | (c==ordineOperatori[2]) | (c==ordineOperatori[3]) | (c==ordineOperatori[4]);
+	return strchr(ordineOperatori,c) != NULL;
 }
 
 int prioritaOperatori(char uo, char o){
