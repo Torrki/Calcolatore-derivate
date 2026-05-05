@@ -7,7 +7,7 @@ int prioritaOperatori(char uo, char o);
 const char* ordineOperatori=".@^/*+-";
 
 void StampaAlbero(Nodo n, unsigned livello){
-	if(n.ni != (struct NodoInfo*)NULL){
+	if(n.ni != (struct NodoInfo*)NULL && n.ni->tipo != 'v'){
 		for(unsigned i=0; i < livello; i++){
 			printf(i == livello-1 ? "|" : "-");
 		}
@@ -16,6 +16,16 @@ void StampaAlbero(Nodo n, unsigned livello){
 			printf("%c\n", n.no->op);
 			StampaAlbero(n.no->n1,livello+1);
 			StampaAlbero(n.no->n2,livello+1);
+			n.no->tipo='v';
+			
+			NodoOperatore *tmp=n.no->genitori[1];
+			unsigned contaLivelli= tmp ? 1 : 0;
+			while(tmp && tmp->genitori[0]){
+				tmp=tmp->genitori[0];
+				contaLivelli++;
+			}
+			if(contaLivelli > 0) StampaAlbero((Nodo)tmp,livello-contaLivelli);
+			n.no->tipo='o';
 		}else{
 			printf("%s\n", n.nf->f);
 		}
@@ -26,14 +36,14 @@ void StampaAlbero(Nodo n, unsigned livello){
 
 const char* AlberotoStr(Nodo n){
 	char* stringaFunzione=NULL;
-	if(n.ni != (struct NodoInfo*)NULL){		
+	if(n.ni != (struct NodoInfo*)NULL && n.ni->tipo != 'v'){		
 		if(n.ni->tipo=='o'){
 			const char* operandoSx=AlberotoStr(n.no->n1);
 			const char* operandoDx=AlberotoStr(n.no->n2);
 			
 			stringaFunzione=(char*)malloc(sizeof(char)*(strlen(operandoSx)+strlen(operandoDx+3)));
-			sprintf(stringaFunzione,"%s%c%s%c",operandoSx, n.no->op=='@' ? '(' : n.no->op, operandoDx, n.no->op=='@' ? ')' : '\0');
-			free((void*)operandoSx);
+			sprintf(stringaFunzione,"%s%c%s%c", operandoSx ? operandoSx : "", n.no->op=='@' ? '(' : n.no->op, operandoDx, n.no->op=='@' ? ')' : '\0');
+			if(operandoSx) free((void*)operandoSx);
 			free((void*)operandoDx);
 		}else{
 			stringaFunzione=(char*)malloc(sizeof(char)*(strlen(n.nf->f)+1));
@@ -79,10 +89,12 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 			if(sottoAlberoParentesi.ni == NULL){ //se non ci sono state parentesi a separare l'operatore
 				funzioneOp.nf=(NodoFunzione*)malloc(sizeof(NodoFunzione));
 				funzioneOp.nf->tipo='f';
+				memset(funzioneOp.nf->genitori,0,sizeof(NodoOperatore*)*2);
 				funzioneOp.nf->f=(char*)malloc(strlen(bufferStringa)+1);
 				strcpy(funzioneOp.nf->f, (const char *)bufferStringa);
 			}else{
 				funzioneOp=sottoAlberoParentesi;
+				memset(funzioneOp.ni->genitori,0,sizeof(NodoOperatore*)*2);
 				sottoAlberoParentesi.ni=NULL;
 			}
 			nuovoOp->tipo='o';
@@ -98,13 +110,15 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 				
 				if(nodoCorrente.ni == NULL){	//primo passo di costruzione
 					nuovoOp->n1=funzioneOp;
-					funzioneOp.nf->genitore=nuovoOp;
+					funzioneOp.nf->genitori[1]=nuovoOp;
 				}else{	//passi successivi
 					nodoCorrente.no->n2=funzioneOp;
 					nuovoOp->n1.no=nodoCorrente.no;
 					
-					funzioneOp.ni->genitore=nodoCorrente.no;
-					nodoCorrente.no->genitore=nuovoOp;
+					funzioneOp.ni->genitori[0]=nodoCorrente.no;
+					//unsigned indice=nodoCorrente.no->genitori[0] != (NodoOperatore*)NULL;
+					//printf("indice: %u\n", indice);
+					nodoCorrente.no->genitori[1]=nuovoOp;
 				}
 				
 				livello++;
@@ -126,8 +140,8 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 				nodoCorrente.no->n2.no=nuovoOp;
 				nuovoOp->n1=funzioneOp;
 				
-				funzioneOp.ni->genitore=nuovoOp;
-				nuovoOp->genitore=nodoCorrente.no;
+				funzioneOp.ni->genitori[1]=nuovoOp;
+				nuovoOp->genitori[0]=nodoCorrente.no;
 				
 				livello--;
 			}
@@ -153,19 +167,20 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 				bufferStringa[i]='\0';
 				ultimaFunzione.nf=(NodoFunzione*)malloc(sizeof(NodoFunzione));
 				ultimaFunzione.nf->tipo='f';
+				memset(ultimaFunzione.nf->genitori,0,sizeof(NodoOperatore*)*2);
 				ultimaFunzione.nf->f=(char*)malloc(strlen(bufferStringa)+1);
 				strcpy(ultimaFunzione.nf->f, (const char *)bufferStringa);
 			}else{
 				ultimaFunzione=sottoAlberoParentesi;
+				memset(ultimaFunzione.ni->genitori,0,sizeof(NodoOperatore*)*2);
 				sottoAlberoParentesi.no=NULL;
 			}
 			
 			if(livello_max==0){	//se non ho mai incontrato un operatore
-				ultimaFunzione.ni->genitore=NULL;
 				nodoRadice=ultimaFunzione;
 			}else{	//completo l'ultimo operatore
 				nodoCorrente.no->n2=ultimaFunzione;
-				ultimaFunzione.ni->genitore=nodoCorrente.no;
+				ultimaFunzione.ni->genitori[0]=nodoCorrente.no;
 			}
 			
 			*numeroCaratteri=caratteriProcessati;
@@ -199,17 +214,21 @@ void DeallocaAlbero(Nodo radice){
 	}
 }
 
-const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice){
+const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice, char d){
 	char* stringaDerivata=NULL;
-	if(radice.no){
+	if(radice.no && radice.no->tipo != 'v'){
 		//Se il nodo radice è un operatore devo sostituire con la regola di derivazione e risolvere ricorsivamente gli operandi
 		if(radice.no->tipo=='o'){
 			//risolvo gli operandi
-			const char* derivataOpSx=AnalizzaAlbero(tabella,radice.no->n1);
-			const char* derivataOpDx=AnalizzaAlbero(tabella,radice.no->n2);
+			const char* derivataOpSx_tmp=AnalizzaAlbero(tabella,radice.no->n1,'s');
+			const char* derivataOpDx_tmp=AnalizzaAlbero(tabella,radice.no->n2,'d');
 			const char *OpDx, *OpSx;
-			size_t dimSx=strlen(derivataOpSx);
-			size_t dimDx=strlen(derivataOpDx);
+			size_t dimSx=derivataOpSx_tmp ? strlen(derivataOpSx_tmp) : 0;
+			size_t dimDx=derivataOpDx_tmp ? strlen(derivataOpDx_tmp) : 0;
+			
+			const char* derivataOpSx = derivataOpSx_tmp ? derivataOpSx_tmp : "";
+			const char* derivataOpDx = derivataOpDx_tmp ? derivataOpDx_tmp : "";
+			//printf("inid: %s\n",derivataOpSx);
 			
 			switch(radice.no->op){
 				case '+':
@@ -260,8 +279,33 @@ const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice){
 					break;
 			}
 			
-			free((void*)derivataOpSx);
-			free((void*)derivataOpDx);
+			if(derivataOpSx_tmp) free((void*)derivataOpSx_tmp);
+			if(derivataOpDx_tmp) free((void*)derivataOpDx_tmp);
+			
+			radice.no->tipo='v';
+			NodoOperatore *tmp=radice.no->genitori[d=='d'];
+			unsigned contaLivelli= tmp ? 1 : 0;
+			while(tmp && tmp->genitori[d=='s']){
+				tmp=tmp->genitori[d=='s'];
+				contaLivelli++;
+			}
+			if(contaLivelli > 0){
+				const char* sottoAlbero=AnalizzaAlbero(tabella,(Nodo)tmp,d);
+				printf("\n%s\n",sottoAlbero);
+				size_t dimSottoAlbero=strlen(sottoAlbero);
+				char* stringaEstesa=(char*)malloc(sizeof(char)*(dimSottoAlbero+strlen(stringaDerivata)+3));
+				
+				const char* strSx= d=='s' ? sottoAlbero : stringaDerivata;
+				const char* strDx= d=='s' ? stringaDerivata : sottoAlbero;
+				sprintf(stringaEstesa, d=='d' ? "(%s)%s" : "%s(%s)", strSx,strDx);
+				
+				free((void*)sottoAlbero);
+				free((void*)stringaDerivata);
+				stringaDerivata=stringaEstesa;
+				printf("Fatto\n");
+			}
+			radice.no->tipo='o';
+			
 		}else{
 			const char* df=OttieniDerivata(tabella,radice.nf->f);
 			stringaDerivata=(char*)malloc(sizeof(char)*(strlen(df)+1));

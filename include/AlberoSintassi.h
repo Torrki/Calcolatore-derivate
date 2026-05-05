@@ -21,14 +21,14 @@ union Nodo{
 
 struct NodoInfo{
 	char tipo;
-	struct NodoOperatore* genitore;
+	struct NodoOperatore* genitori[2];
 };
 
 /*! \brief Nodo per rappresentare un operatore
  */
 struct NodoOperatore{
 	char tipo;
-	struct NodoOperatore* genitore;
+	struct NodoOperatore* genitori[2];
 	char op;
 	union Nodo n1;
 	union Nodo n2;
@@ -38,7 +38,7 @@ struct NodoOperatore{
  */
 struct NodoFunzione{
 	char tipo;
-	struct NodoOperatore* genitore;
+	struct NodoOperatore* genitori[2];
 	char* f;
 };
 
@@ -77,5 +77,5 @@ typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
 void StampaAlbero(Nodo n, unsigned livello);
 Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numeroCaratteri);
 void DeallocaAlbero(Nodo radice);
-const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice);
+const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice, char d);
 const char* AlberotoStr(Nodo n);
