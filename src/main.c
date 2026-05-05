@@ -40,7 +40,7 @@ int main(int argc, char* argv[]){
 		Nodo radiceAlberoSintassi=CreaAlbero(Automa,stringaAlbero,&caratteriProcessati);
 		StampaAlbero(radiceAlberoSintassi,0);
 		
-		const char* derivataFunzione=AnalizzaAlbero(TabellaDerivate,radiceAlberoSintassi,'s');
+		const char* derivataFunzione=AnalizzaAlbero(TabellaDerivate,radiceAlberoSintassi);
 		printf("\n\nLa derivata: %s\n", derivataFunzione);
 		
 		DeallocaAlbero(radiceAlberoSintassi);
