@@ -7,12 +7,12 @@ int prioritaOperatori(char uo, char o);
 const char* ordineOperatori=".@^/*+-";
 
 void StampaAlbero(Nodo n, unsigned livello){
-	if(n.nf != (struct NodoFunzione*)NULL){
+	if(n.ni != (struct NodoInfo*)NULL){
 		for(unsigned i=0; i < livello; i++){
 			printf(i == livello-1 ? "|" : "-");
 		}
 		
-		if(n.no->tipo=='o'){
+		if(n.ni->tipo=='o'){
 			printf("%c\n", n.no->op);
 			StampaAlbero(n.no->n1,livello+1);
 			StampaAlbero(n.no->n2,livello+1);
@@ -26,8 +26,8 @@ void StampaAlbero(Nodo n, unsigned livello){
 
 const char* AlberotoStr(Nodo n){
 	char* stringaFunzione=NULL;
-	if(n.nf != (struct NodoFunzione*)NULL){		
-		if(n.no->tipo=='o'){
+	if(n.ni != (struct NodoInfo*)NULL){		
+		if(n.ni->tipo=='o'){
 			const char* operandoSx=AlberotoStr(n.no->n1);
 			const char* operandoDx=AlberotoStr(n.no->n2);
 			
@@ -47,11 +47,12 @@ const char* AlberotoStr(Nodo n){
 Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numeroCaratteri){
 	//inizializzazione per la costruzione dell'albero
 	Nodo nodoCorrente,nodoRadice,sottoAlberoParentesi;
+	
 	int livello_max=0, livello=0;
 	size_t caratteriProcessati=0, caratteriSottoalbero=0;
-	nodoCorrente.no=NULL;
-	nodoRadice.no=NULL;
-	sottoAlberoParentesi.no=NULL;
+	nodoCorrente.ni=NULL;
+	nodoRadice.ni=NULL;
+	sottoAlberoParentesi.ni=NULL;
 	
 	char* bufferStringa=(char*)malloc(100*sizeof(char));
 	char ultimoOperatore='.'; //operatore a massima priorità
@@ -59,6 +60,7 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 	unsigned i=0;
 	char statoAutomaFunzioni='0';
 	char carattere=*funzioneSym;
+	//char faseSD=0, faseSD_prec=0;	//variabile per indicare salita (0) nella costruzione o discesa (1)
 	
 	ResetAutoma(a);
 	
@@ -74,34 +76,62 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 			
 			NodoOperatore* nuovoOp=(NodoOperatore*)malloc(sizeof(NodoOperatore));			
 			Nodo funzioneOp;
-			if(sottoAlberoParentesi.no == NULL){ //se non ci sono state parentesi a separare l'operatore
+			if(sottoAlberoParentesi.ni == NULL){ //se non ci sono state parentesi a separare l'operatore
 				funzioneOp.nf=(NodoFunzione*)malloc(sizeof(NodoFunzione));
 				funzioneOp.nf->tipo='f';
 				funzioneOp.nf->f=(char*)malloc(strlen(bufferStringa)+1);
 				strcpy(funzioneOp.nf->f, (const char *)bufferStringa);
 			}else{
 				funzioneOp=sottoAlberoParentesi;
-				sottoAlberoParentesi.no=NULL;
+				sottoAlberoParentesi.ni=NULL;
 			}
 			nuovoOp->tipo='o';
 			nuovoOp->op=op;
 			
 			//stabilire la priorità per la costruzione dell'albero
 			if(prioritaOperatori(ultimoOperatore,op)){	//salgo
-				if(nodoCorrente.no == NULL){	//primo passo di costruzione
+				/*faseSD = 0;
+				if(faseSD_prec){	//torno nella condizione iniziale dell'algoritmo per individuare le nuove radici
+					livello=0;
+					livello_max=0;
+				}*/
+				
+				if(nodoCorrente.ni == NULL){	//primo passo di costruzione
 					nuovoOp->n1=funzioneOp;
+					funzioneOp.nf->genitore=nuovoOp;
 				}else{	//passi successivi
 					nodoCorrente.no->n2=funzioneOp;
 					nuovoOp->n1.no=nodoCorrente.no;
+					
+					funzioneOp.ni->genitore=nodoCorrente.no;
+					nodoCorrente.no->genitore=nuovoOp;
 				}
 				
 				livello++;
 			}else{	//scendo
+				/*faseSD=1;
+				if(!faseSD_prec){	//memorizzo la nuova radice
+					NodoRadice* nuovoNodo=(NodoRadice*)malloc(sizeof(NodoRadice));
+					nuovoNodo->radice=nodoRadice;
+					nuovoNodo->successivo=NULL;
+					
+					if(RadiceAlbero){
+						NodoRadice* tmp=RadiceAlbero;
+						while(tmp->successivo) tmp=tmp->successivo;
+						tmp->successivo=nuovoNodo;
+					}else{
+						RadiceAlbero=nuovoNodo;
+					}
+				}*/
 				nodoCorrente.no->n2.no=nuovoOp;
 				nuovoOp->n1=funzioneOp;
 				
+				funzioneOp.ni->genitore=nuovoOp;
+				nuovoOp->genitore=nodoCorrente.no;
+				
 				livello--;
 			}
+			//faseSD_prec=faseSD;
 			nodoCorrente.no=nuovoOp;
 			ultimoOperatore=op;
 			
@@ -131,9 +161,11 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 			}
 			
 			if(livello_max==0){	//se non ho mai incontrato un operatore
+				ultimaFunzione.ni->genitore=NULL;
 				nodoRadice=ultimaFunzione;
 			}else{	//completo l'ultimo operatore
 				nodoCorrente.no->n2=ultimaFunzione;
+				ultimaFunzione.ni->genitore=nodoCorrente.no;
 			}
 			
 			*numeroCaratteri=caratteriProcessati;

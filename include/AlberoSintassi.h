@@ -8,6 +8,7 @@
 
 struct NodoFunzione;
 struct NodoOperatore;
+struct NodoInfo;
 union Nodo;
 
 /*! \brief Unione per rappresentare il tipo generico del nodo
@@ -15,12 +16,19 @@ union Nodo;
 union Nodo{
 	struct NodoFunzione* nf;
 	struct NodoOperatore* no;
+	struct NodoInfo* ni;
+};
+
+struct NodoInfo{
+	char tipo;
+	struct NodoOperatore* genitore;
 };
 
 /*! \brief Nodo per rappresentare un operatore
  */
 struct NodoOperatore{
 	char tipo;
+	struct NodoOperatore* genitore;
 	char op;
 	union Nodo n1;
 	union Nodo n2;
@@ -30,11 +38,13 @@ struct NodoOperatore{
  */
 struct NodoFunzione{
 	char tipo;
+	struct NodoOperatore* genitore;
 	char* f;
 };
 
 typedef struct NodoFunzione NodoFunzione; /*!< Nodo per rappresentare una funzione*/
 typedef struct NodoOperatore NodoOperatore; /*!< Nodo per rappresentare un operatore*/
+typedef struct NodoInfo NodoInfo;
 typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
 
 /*! \fn void StampaAlbero(Nodo n, unsigned livello)
