@@ -6,12 +6,6 @@
 #define STATO_FINALE '5'
 #define STATO_COMPOSIZIONE '2'
 
-#define SOMMA "+"
-#define DIFFERENZA "-"
-#define MOLTIPLICAZIONE "*"
-#define DIVISIONE "/"
-#define CONCATENAZIONE "@"
-
 /*! \brief Stato per rappresentare il vertice del grafo
  */
 struct Stato{

@@ -7,8 +7,8 @@ struct AutomaSintassi* CreaAutoma(){
 
 	struct AutomaSintassi* automa=(struct AutomaSintassi*)malloc(sizeof(struct AutomaSintassi));
 	const char* stati="012345678";
-	const char* inputsStati[]={" ()xlesc","n","(","x","p",") ^/*+-","i","o","s"};
-	const char* statiSuccessiviStr[]={"00551367","2","0","4","2","5500000","1","8","2"};
+	const char* inputsStati[]={" ()xlesc0123456789","n","(","x","p",") ^/*+-0123456789","i","o","s"};
+	const char* statiSuccessiviStr[]={"005513670555555555","2","0","4","2","55000005555555555","1","8","2"};
 	const size_t numeroStati=strlen(stati);
 	
 	//creo i vertici del grafo

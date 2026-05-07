@@ -250,8 +250,8 @@ const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice){
 			free((void*)derivataOpDx);
 		}else{
 			const char* df=OttieniDerivata(tabella,radice.nf->f);
-			stringaDerivata=(char*)malloc(sizeof(char)*(strlen(df)+1));
-			strcpy(stringaDerivata,df);
+			stringaDerivata=(char*)malloc(sizeof(char)*(df ? strlen(df)+1 : 2));
+			strcpy(stringaDerivata,df ? df : "0");
 		}
 	}
 	return stringaDerivata;

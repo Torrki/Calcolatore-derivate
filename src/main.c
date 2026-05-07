@@ -24,14 +24,14 @@ int main(int argc, char* argv[]){
 	//analisi della sintassi
 	for(ssize_t i=0; i<numeroCaratteri-1 && statoSuccessivo>-1; ++i){
 		char carattere_i=stringaInput[i];
-		statoSuccessivo=InputAutoma(Automa,carattere_i);
-		if(statoSuccessivo > -1 && carattere_i != ' '){
+		if(carattere_i != '0' && Automa->statoCorrente->s==STATO_INIZIALE || carattere_i != ' '){
+			statoSuccessivo=InputAutoma(Automa,carattere_i);
 			stringaAlbero[j]=carattere_i;
 			++j;
-		}
 		//printf("Stato succ: %c\n", statoSuccessivo);
+		}
 	}
-	if(VerificaStatoFinale(Automa)){
+	if(statoSuccessivo > -1 && VerificaStatoFinale(Automa)){
 		stringaAlbero[j]='\n';
 		stringaAlbero[j+1]='\0';
 		printf("%s\n", stringaAlbero);
