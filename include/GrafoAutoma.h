@@ -2,6 +2,7 @@
  *  \brief File header per l'automa delle funzioni
  */
 #pragma once
+#include <TabellaDerivate.h>
 #define STATO_INIZIALE '0'
 #define STATO_FINALE '5'
 #define STATO_COMPOSIZIONE '2'
@@ -10,7 +11,7 @@
  */
 struct Stato{
 	//parte grafo
-	char s;
+	unsigned char s;
 	const char* inputs;
 	struct Stato** statiSuccessivi;
 	
@@ -62,7 +63,9 @@ struct AutomaSintassi{
  *  \brief metodo per deallocare l'automa della sintassi
  *	\param a automa da deallocare
  */
-struct AutomaSintassi* CreaAutoma();
+
+struct AutomaSintassi* CreaAutoma(struct Tabella* tabella);
+
 char InputAutoma(struct AutomaSintassi* a, char i);
 char StatoCorrenteAutoma(struct AutomaSintassi* a);
 int InputValido(struct AutomaSintassi* a, char i);

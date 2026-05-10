@@ -8,11 +8,23 @@ int prioritaOperatori(char uo, char o);
 int main(int argc, char* argv[]){
 	char* stringaInput=NULL;
 	size_t dimensioneStringa=0;
-	struct AutomaSintassi* Automa=CreaAutoma();
-	struct CoppiaDerivata* TabellaDerivate=CreaTabella();
+	struct Tabella* TabellaDerivate=CreaTabella();
+	struct AutomaSintassi* Automa=CreaAutoma(TabellaDerivate);
+	
+	StampaTabella(TabellaDerivate);
+	
+	struct Stato* statoTmp=Automa->statoIniziale;
+	while(statoTmp){
+		//printf("(%hhu,%s)%s",statoTmp->s,statoTmp,statoTmp->successivo ? "-->" : "\n");
+		printf("%hhu\n",statoTmp->s);
+		for(unsigned i=0; statoTmp->statiSuccessivi[i]; ++i){
+			printf("\t\t%hhu\n", statoTmp->statiSuccessivi[i]->s);
+		}
+		statoTmp=statoTmp->successivo;
+	}
 	
 	//lettura input stringa
-	printf("funzione nella variabile x: ");
+	/*printf("funzione nella variabile x: ");
 	ssize_t numeroCaratteri=getline(&stringaInput,&dimensioneStringa,stdin);
 	size_t caratteriProcessati=0;
 	char statoSuccessivo=0;
@@ -24,13 +36,14 @@ int main(int argc, char* argv[]){
 	//analisi della sintassi
 	for(ssize_t i=0; i<numeroCaratteri-1 && statoSuccessivo>-1; ++i){
 		char carattere_i=stringaInput[i];
-		if(carattere_i != '0' && Automa->statoCorrente->s==STATO_INIZIALE || carattere_i != ' '){
+		if((carattere_i != '0' && Automa->statoCorrente->s==STATO_INIZIALE) || carattere_i != ' '){
 			statoSuccessivo=InputAutoma(Automa,carattere_i);
 			stringaAlbero[j]=carattere_i;
 			++j;
-		//printf("Stato succ: %c\n", statoSuccessivo);
 		}
 	}
+	
+	//analisi della semantica e calcolo della derivata
 	if(statoSuccessivo > -1 && VerificaStatoFinale(Automa)){
 		stringaAlbero[j]='\n';
 		stringaAlbero[j+1]='\0';
@@ -47,10 +60,10 @@ int main(int argc, char* argv[]){
 	}else{
 		printf("Errore nella sintassi della stringa\n");
 	}
-	
+	*/
 	CancellaAutoma(Automa);
 	CancellaTabella(TabellaDerivate);
-	free(stringaInput);
+	//free(stringaInput);
 	
 	return 0;
 }

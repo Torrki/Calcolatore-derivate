@@ -77,5 +77,5 @@ typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
 void StampaAlbero(Nodo n, unsigned livello);
 Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numeroCaratteri);
 void DeallocaAlbero(Nodo radice);
-const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice);
+const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice);
 const char* AlberotoStr(Nodo n);

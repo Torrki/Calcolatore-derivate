@@ -1,61 +1,92 @@
 #include <GrafoAutoma.h>
+#include <TabellaDerivate.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-struct AutomaSintassi* CreaAutoma(){
-
+struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
+	size_t numeroStati=2, dimensioneMassima=0;
+	struct CoppiaDerivata* testaTmp=tabella->testa;
 	struct AutomaSintassi* automa=(struct AutomaSintassi*)malloc(sizeof(struct AutomaSintassi));
-	const char* stati="012345678";
-	const char* inputsStati[]={" ()xlesc0123456789","n","(","x","p",") ^/*+-0123456789","i","o","s"};
-	const char* statiSuccessiviStr[]={"005513670555555555","2","0","4","2","55000005555555555","1","8","2"};
-	const size_t numeroStati=strlen(stati);
+	automa->statoIniziale=NULL;
 	
-	//creo i vertici del grafo
-	struct Stato *stato_0=NULL, *stato_prec=NULL;
-	for(size_t i=0; i<numeroStati; ++i){
-		struct Stato* vertice=(struct Stato*)malloc(sizeof(struct Stato));
-		vertice->s=stati[i];
-		vertice->inputs=(const char*)malloc(sizeof(char)*(strlen(inputsStati[i])+1));
-		vertice->successivo=NULL;
-		strcpy((char*)vertice->inputs,inputsStati[i]);
+	//Identifico il numero di stati
+	for(size_t i=0; i<tabella->numeroVoci; ++i){
+		size_t dimensioneStringa=strlen(testaTmp->chiave);
+		dimensioneMassima = dimensioneStringa > dimensioneMassima ? dimensioneStringa : dimensioneMassima;
+		numeroStati += strlen(testaTmp->chiave)-1;
 		
-		//collego i vertici nella lista circolare
-		if(i==0){
-			stato_0=vertice;
-			stato_prec=vertice;
-		}else{
-			stato_prec->successivo=vertice;
-			stato_prec=vertice;
-		}
+		testaTmp=testaTmp->succ;
 	}
-	//stato_prec->successivo=stato_0;	//Chiudo il cerchio
-	automa->statoIniziale=stato_0;
 	
-	//collegamento tra vertici
-	stato_prec=stato_0;
-	for(size_t i=0; i<numeroStati; ++i){
-		const char* ss=statiSuccessiviStr[i];
-		size_t numeroStatiSuccessivi=strlen(ss);
-		stato_prec->statiSuccessivi=(struct Stato**)malloc(sizeof(struct Stato)*numeroStatiSuccessivi);
-		for(size_t j=0; j<numeroStatiSuccessivi; ++j){
-			unsigned indiceStato=ss[j]-'0';
-			struct Stato* stato_tmp=stato_0;
-			while(indiceStato--) stato_tmp=stato_tmp->successivo;
-			stato_prec->statiSuccessivi[j]=stato_tmp;
+	//Creo i vertici
+	testaTmp=tabella->testa;
+	size_t contatoreStati=1,contatoreVoci=0;
+	struct Stato *statoPrecedente=NULL;
+	char* stringaInputs=(char*)calloc(2*numeroStati+tabella->numeroVoci-2+3,sizeof(char)); //3 di span
+	
+	//stato 0
+	struct Stato* vertice0=(struct Stato*)malloc(sizeof(struct Stato));
+	vertice0->s=0;
+	vertice0->inputs=stringaInputs;
+	vertice0->statiSuccessivi=(struct Stato**)calloc(tabella->numeroVoci+1,sizeof(struct Stato*));
+	
+	//stato finale
+	struct Stato* verticeFinale=(struct Stato*)malloc(sizeof(struct Stato));
+	char* inputStatoFinale=stringaInputs+tabella->numeroVoci+1+(numeroStati-1)*2;
+	inputStatoFinale[0]='(';
+	
+	verticeFinale->s=numeroStati-1;
+	verticeFinale->inputs=inputStatoFinale;
+	verticeFinale->statiSuccessivi=(struct Stato**)calloc(2,sizeof(struct Stato*));
+	verticeFinale->statiSuccessivi[0]=vertice0;
+	verticeFinale->successivo=NULL;
+	
+	statoPrecedente=vertice0;
+	while(testaTmp){
+		//scrivo per l'input dello stato 0
+		stringaInputs[contatoreVoci]=testaTmp->chiave[0];
+		
+		//creo i vertici intermedi e li collego
+		for(unsigned i=1;testaTmp->chiave[i];++i){
+			char* inputCaratteri=stringaInputs+tabella->numeroVoci+1+(contatoreStati-1)*2;
+			struct Stato* vertice=(struct Stato*)malloc(sizeof(struct Stato));
+			
+			inputCaratteri[0]=testaTmp->chiave[i];
+			vertice->s=contatoreStati;
+			vertice->inputs=inputCaratteri;
+			vertice->statiSuccessivi=(struct Stato**)calloc(2,sizeof(struct Stato*));
+			
+			if(i==1){
+				vertice0->statiSuccessivi[contatoreVoci]=vertice;
+			}else{
+				statoPrecedente->statiSuccessivi[0]=vertice;
+			}
+			
+			//per la lista
+			statoPrecedente->successivo=vertice;
+			statoPrecedente=vertice;
+			contatoreStati++;
 		}
-		stato_prec=stato_prec->successivo;
+		
+		//per il grafo, collegamento allo stato finale
+		statoPrecedente->statiSuccessivi[0]=testaTmp->chiave[0] == 'x' ? vertice0 : verticeFinale;
+		contatoreVoci++;
+		testaTmp=testaTmp->succ;
 	}
-	automa->statoCorrente=stato_0;
-	automa->parentesi=0;
+	
+	statoPrecedente->successivo=verticeFinale;	
+	automa->statoIniziale=vertice0;
+	
 	return automa;
 }
 
 void CancellaAutoma(struct AutomaSintassi* a){
 	struct Stato* stato_tmp=NULL;
+	free((void*)a->statoIniziale->inputs);
 	while(a->statoIniziale){
 		stato_tmp=a->statoIniziale->successivo;
-		free((void*)a->statoIniziale->inputs);
+		//free((void*)a->statoIniziale->inputs);
 		free((void*)a->statoIniziale->statiSuccessivi);
 		free((void*)a->statoIniziale);
 		a->statoIniziale=stato_tmp;

@@ -185,7 +185,7 @@ void DeallocaAlbero(Nodo radice){
 	}
 }
 
-const char* AnalizzaAlbero(struct CoppiaDerivata* tabella, Nodo radice){
+const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice){
 	char* stringaDerivata=NULL;
 	if(radice.no){
 		//Se il nodo radice è un operatore devo sostituire con la regola di derivazione e risolvere ricorsivamente gli operandi
