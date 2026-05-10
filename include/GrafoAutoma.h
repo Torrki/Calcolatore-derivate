@@ -3,9 +3,6 @@
  */
 #pragma once
 #include <TabellaDerivate.h>
-#define STATO_INIZIALE '0'
-#define STATO_FINALE '5'
-#define STATO_COMPOSIZIONE '2'
 
 /*! \brief Stato per rappresentare il vertice del grafo
  */
@@ -22,6 +19,7 @@ struct Stato{
 struct AutomaSintassi{
 	struct Stato* statoCorrente;
 	struct Stato* statoIniziale;
+	size_t numeroStati;
 	int parentesi;
 };
 
@@ -66,7 +64,7 @@ struct AutomaSintassi{
 
 struct AutomaSintassi* CreaAutoma(struct Tabella* tabella);
 
-char InputAutoma(struct AutomaSintassi* a, char i);
+unsigned char InputAutoma(struct AutomaSintassi* a, char i);
 char StatoCorrenteAutoma(struct AutomaSintassi* a);
 int InputValido(struct AutomaSintassi* a, char i);
 void ResetAutoma(struct AutomaSintassi* a);

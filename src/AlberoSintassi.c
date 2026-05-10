@@ -68,9 +68,9 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 		//char statoAutomaFunzioni=StatoCorrenteAutoma();
 		
 		//se il carattere letto è un operatore o una parentesi per la composizione
-		if(operatore(carattere) || statoAutomaFunzioni==STATO_COMPOSIZIONE){
+		if(operatore(carattere) || statoAutomaFunzioni==(unsigned char)(a->numeroStati-2)){
 			bufferStringa[i]='\0';
-			char op=statoAutomaFunzioni==STATO_COMPOSIZIONE ? '@' : carattere;
+			char op=statoAutomaFunzioni==(unsigned char)(a->numeroStati-2) ? '@' : carattere;
 			
 			NodoOperatore* nuovoOp=(NodoOperatore*)malloc(sizeof(NodoOperatore));			
 			Nodo funzioneOp;
@@ -127,7 +127,7 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 			
 			//torno a inizio buffer
 			i=0;
-		}else if(carattere == '(' && statoAutomaFunzioni == STATO_INIZIALE){
+		}else if(carattere == '(' && statoAutomaFunzioni == 0){
 			//Il contenuto tra parentesi ha maggiore priorità e bisogna creare un albero specifico
 			sottoAlberoParentesi=CreaAlbero(a,funzioneSym+1,&caratteriSottoalbero);
 			ResetAutoma(a); //Per tornare allo stato 0
@@ -162,7 +162,7 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 		}
 		
 		//faccio avanzare l'automa e conto tutti i caratteri processati
-		if(statoAutomaFunzioni != STATO_COMPOSIZIONE){	//if necessario per trattare come sottoalbero l'argomento delle funzioni
+		if(statoAutomaFunzioni != (unsigned char)(a->numeroStati-2)){	//if necessario per trattare come sottoalbero l'argomento delle funzioni
 			funzioneSym += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;
 			caratteriProcessati += sottoAlberoParentesi.nf == NULL ? 1 : caratteriSottoalbero+2;
 		}

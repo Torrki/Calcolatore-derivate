@@ -12,10 +12,11 @@ int main(int argc, char* argv[]){
 	struct AutomaSintassi* Automa=CreaAutoma(TabellaDerivate);
 	
 	StampaTabella(TabellaDerivate);
+	printf("Numero stati automa: %lu\n", Automa->numeroStati);
 	
 	struct Stato* statoTmp=Automa->statoIniziale;
 	while(statoTmp){
-		//printf("(%hhu,%s)%s",statoTmp->s,statoTmp,statoTmp->successivo ? "-->" : "\n");
+		//printf("(%hhu,\"%s\")%s",statoTmp->s,statoTmp->inputs,statoTmp->successivo ? "-->" : "\n");
 		printf("%hhu\n",statoTmp->s);
 		for(unsigned i=0; statoTmp->statiSuccessivi[i]; ++i){
 			printf("\t\t%hhu\n", statoTmp->statiSuccessivi[i]->s);
@@ -24,7 +25,7 @@ int main(int argc, char* argv[]){
 	}
 	
 	//lettura input stringa
-	/*printf("funzione nella variabile x: ");
+	printf("funzione nella variabile x: ");
 	ssize_t numeroCaratteri=getline(&stringaInput,&dimensioneStringa,stdin);
 	size_t caratteriProcessati=0;
 	char statoSuccessivo=0;
@@ -34,9 +35,10 @@ int main(int argc, char* argv[]){
 	unsigned j=0;
 	
 	//analisi della sintassi
-	for(ssize_t i=0; i<numeroCaratteri-1 && statoSuccessivo>-1; ++i){
+	ssize_t i=0;
+	for(; i<numeroCaratteri-1 && statoSuccessivo>-1; ++i){
 		char carattere_i=stringaInput[i];
-		if((carattere_i != '0' && Automa->statoCorrente->s==STATO_INIZIALE) || carattere_i != ' '){
+		if((carattere_i != '0' && Automa->statoCorrente->s==0) || carattere_i != ' '){
 			statoSuccessivo=InputAutoma(Automa,carattere_i);
 			stringaAlbero[j]=carattere_i;
 			++j;
@@ -58,12 +60,12 @@ int main(int argc, char* argv[]){
 		
 		DeallocaAlbero(radiceAlberoSintassi);
 	}else{
-		printf("Errore nella sintassi della stringa\n");
+		printf("Errore nella sintassi della stringa al carattere %ld\n", i+1);
 	}
-	*/
+	
 	CancellaAutoma(Automa);
 	CancellaTabella(TabellaDerivate);
-	//free(stringaInput);
+	free(stringaInput);
 	
 	return 0;
 }
