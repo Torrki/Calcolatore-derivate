@@ -11,19 +11,6 @@ int main(int argc, char* argv[]){
 	struct Tabella* TabellaDerivate=CreaTabella();
 	struct AutomaSintassi* Automa=CreaAutoma(TabellaDerivate);
 	
-	StampaTabella(TabellaDerivate);
-	printf("Numero stati automa: %lu\n", Automa->numeroStati);
-	
-	struct Stato* statoTmp=Automa->statoIniziale;
-	while(statoTmp){
-		//printf("(%hhu,\"%s\")%s",statoTmp->s,statoTmp->inputs,statoTmp->successivo ? "-->" : "\n");
-		printf("%hhu\n",statoTmp->s);
-		for(unsigned i=0; statoTmp->statiSuccessivi[i]; ++i){
-			printf("\t\t%hhu\n", statoTmp->statiSuccessivi[i]->s);
-		}
-		statoTmp=statoTmp->successivo;
-	}
-	
 	//lettura input stringa
 	printf("funzione nella variabile x: ");
 	ssize_t numeroCaratteri=getline(&stringaInput,&dimensioneStringa,stdin);
@@ -49,7 +36,6 @@ int main(int argc, char* argv[]){
 	if(statoSuccessivo > -1 && VerificaStatoFinale(Automa)){
 		stringaAlbero[j]='\n';
 		stringaAlbero[j+1]='\0';
-		printf("%s\n", stringaAlbero);
 		
 		//la costruzione dell'albero avviene senza errori di sintassi
 		Nodo radiceAlberoSintassi=CreaAlbero(Automa,stringaAlbero,&caratteriProcessati);

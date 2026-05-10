@@ -40,18 +40,6 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	vertice0->statiSuccessivi[0]=vertice0;
 	vertice0->statiSuccessivi[1]=vertice0;
 	strcpy(stringaInputs,INPUT_BASE);
-	/*stringaInputs[0]=' ';
-	stringaInputs[1]='(';
-	stringaInputs[2]='0';
-	stringaInputs[3]='1';
-	stringaInputs[3]='2';
-	stringaInputs[3]='3';
-	stringaInputs[3]='4';
-	stringaInputs[3]='5';
-	stringaInputs[3]='1';
-	stringaInputs[3]='1';
-	stringaInputs[3]='1';
-	stringaInputs[3]='1';*/
 	
 	//stato finale delle funzioni
 	struct Stato* verticeFinale=(struct Stato*)malloc(sizeof(struct Stato));
@@ -146,7 +134,6 @@ void CancellaAutoma(struct AutomaSintassi* a){
 	free((void*)a->statoIniziale->inputs);
 	while(a->statoIniziale){
 		stato_tmp=a->statoIniziale->successivo;
-		//free((void*)a->statoIniziale->inputs);
 		free((void*)a->statoIniziale->statiSuccessivi);
 		free((void*)a->statoIniziale);
 		a->statoIniziale=stato_tmp;
@@ -159,7 +146,6 @@ unsigned char InputAutoma(struct AutomaSintassi* a, char i){
 		a->parentesi += i=='(' ? 1 : i==')' ? -1 : 0; //se la variabile diventa negativa già ci sono delle parentesi chiuse non corrisposte
 		if(a->parentesi >= 0){
 			unsigned indice=strchr(a->statoCorrente->inputs,i)-a->statoCorrente->inputs;
-			//printf("indice:\t%u\n",indice);
 			struct Stato* statoSuccessivo=a->statoCorrente->statiSuccessivi[indice];
 			a->statoCorrente=statoSuccessivo;
 			ret=statoSuccessivo->s;
@@ -173,7 +159,6 @@ int InputValido(struct AutomaSintassi* a, char i){
 }
 
 void ResetAutoma(struct AutomaSintassi* a){
-	//printf("%p\n", statiAutoma[0]);
 	a->statoCorrente=a->statoIniziale;
 }
 

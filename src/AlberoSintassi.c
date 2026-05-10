@@ -229,9 +229,9 @@ const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice){
 					char* DerivataComposta=(char*)malloc(sizeof(char)*(dimSx+strlen(OpDx)-1));
 					sprintf(DerivataComposta,derivataOpSx,OpDx);
 					
-					stringaDerivata=(char*)malloc(sizeof(char)*(strlen(DerivataComposta)+dimDx+4));
+					stringaDerivata=(char*)malloc(sizeof(char)*(strlen(DerivataComposta)+dimDx+6));
 					
-					sprintf(stringaDerivata,"(%s)*%s",DerivataComposta,derivataOpDx);
+					sprintf(stringaDerivata,"(%s)*(%s)",DerivataComposta,derivataOpDx);
 					free((void*)OpDx);
 					free((void*)DerivataComposta);
 					break;
