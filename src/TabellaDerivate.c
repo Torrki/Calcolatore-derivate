@@ -62,6 +62,8 @@ struct Tabella* CreaTabella(){
 	AggiungiDerivata(tabellaDerivate,"ln","1/(%s)");
 	AggiungiDerivata(tabellaDerivate,"sin","cos(%s)");
 	AggiungiDerivata(tabellaDerivate,"cos","-sin(%s)");
+	AggiungiDerivata(tabellaDerivate,"arccos","-1/sqrt(1-(%s)^2)");
+	AggiungiDerivata(tabellaDerivate,"arcsin","1/sqrt(1-(%s)^2)");
 	return tabellaDerivate;
 }
 

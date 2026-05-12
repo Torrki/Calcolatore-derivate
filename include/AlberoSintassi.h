@@ -48,11 +48,11 @@ typedef struct NodoInfo NodoInfo;
 typedef union Nodo Nodo; /*!< Tipo generico del nodo*/
 
 /*! \fn void StampaAlbero(Nodo n, unsigned livello)
- *  \brief Metodo per stampare l'albero del nodo n
- *
- *  \param n nodo radice dell'albero
- *  \param livello livello associato al nodo, default è 0
- */
+*  \brief Metodo per stampare l'albero del nodo n
+*
+*  \param n nodo radice dell'albero
+*  \param livello livello associato al nodo, default è 0
+*/
  
 /*! \fn Nodo CreaAlbero(const char* funzioneSym)
 *  \brief metodo per creare l'albero dalla stringa simbolica 

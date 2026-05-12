@@ -3,13 +3,16 @@
  */
 #pragma once
 #include <TabellaDerivate.h>
+#define STATO_INIZIALE 0
+#define STATO_PARENTESI 1
+#define STATO_OPERATORI 2
 
 /*! \brief Stato per rappresentare il vertice del grafo
  */
 struct Stato{
 	//parte grafo
 	unsigned char s;
-	const char* inputs;
+	char* inputs;
 	struct Stato** statiSuccessivi;
 	
 	//parte lista circolare
