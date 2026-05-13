@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define INPUT_INIZIALE_BASE " (-x0123456789"
+#define INPUT_INIZIALE_BASE " (x0123456789-"
 #define INPUT_OPERATORI ") ^*+/-0123456789"
 
 void CollegamentoVertici(struct Stato* v1, struct Stato* v2, char input);
@@ -17,6 +17,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	
 	//Creo i vertici degli stati iniziale,fine funzione,operatore
 	struct Stato* vertice0=(struct Stato*)malloc(sizeof(struct Stato));
+	//struct Stato* verticeMeno=(struct Stato*)malloc(sizeof(struct Stato));
 	struct Stato* verticeFinale=(struct Stato*)malloc(sizeof(struct Stato));
 	struct Stato* verticeOperatori=(struct Stato*)malloc(sizeof(struct Stato));
 	
@@ -31,7 +32,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	//collegamenti input base
 	vertice0->statiSuccessivi[0]=vertice0;
 	vertice0->statiSuccessivi[1]=vertice0;
-	vertice0->statiSuccessivi[2]=vertice0;
+	vertice0->statiSuccessivi[2]=verticeOperatori;
 	vertice0->statiSuccessivi[3]=verticeOperatori;
 	vertice0->statiSuccessivi[4]=verticeOperatori;
 	vertice0->statiSuccessivi[5]=verticeOperatori;
@@ -42,7 +43,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	vertice0->statiSuccessivi[10]=verticeOperatori;
 	vertice0->statiSuccessivi[11]=verticeOperatori;
 	vertice0->statiSuccessivi[12]=verticeOperatori;
-	vertice0->statiSuccessivi[13]=verticeOperatori;
+	vertice0->statiSuccessivi[13]=vertice0;
 	
 	//stato finale delle funzioni
 	verticeFinale->s=1;
@@ -118,6 +119,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	automa->statoCorrente=vertice0;
 	automa->numeroStati=numeroStati;
 	automa->parentesi=0;
+	automa->meno=0;
 	//printf("Numero stati: %lu\n", numeroStati);
 	
 	return automa;
@@ -138,11 +140,13 @@ unsigned char InputAutoma(struct AutomaSintassi* a, char i){
 	unsigned char ret=-1;
 	if(InputValido(a,i)){
 		a->parentesi += i=='(' ? 1 : i==')' ? -1 : 0; //se la variabile diventa negativa già ci sono delle parentesi chiuse non corrisposte
-		if(a->parentesi >= 0){
+		if(a->parentesi >= 0 && !(a->meno * i=='-')){ //errore se dopo un '-' dello stato iniziale metto un altro '-'
 			unsigned indice=strchr(a->statoCorrente->inputs,i)-a->statoCorrente->inputs;
 			struct Stato* statoSuccessivo=a->statoCorrente->statiSuccessivi[indice];
 			a->statoCorrente=statoSuccessivo;
 			ret=statoSuccessivo->s;
+			
+			a->meno= a->statoCorrente->s==STATO_INIZIALE && i=='-'; //questa condizione è 1 solamente quando attraverso il cappio dell'input meno dello stato iniziale
 		}
 	}
 	return ret;

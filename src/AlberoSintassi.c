@@ -139,7 +139,7 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 			
 			//torno a inizio buffer
 			i=0;
-		}else if(carattere == '(' && statoAutomaFunzioni == 0){
+		}else if(carattere == '(' && statoAutomaFunzioni == STATO_INIZIALE){
 			//Il contenuto tra parentesi ha maggiore priorità e bisogna creare un albero specifico
 			sottoAlberoParentesi=CreaAlbero(a,funzioneSym+1,&caratteriSottoalbero);
 			ResetAutoma(a); //Per tornare allo stato 0
@@ -308,7 +308,7 @@ char Parentesi(char* esp, size_t *caratteriProcessati, struct AutomaSintassi *a)
 	char* espTmp=esp+1;
 	char c=*espTmp, statoAutoma=StatoCorrenteAutoma(a);
 	size_t cp=1; //la parentesi aperta d'inizio
-	printf("Carattere inizio: %c\tstato inizio: %hhd\n", c, statoAutoma);
+	//printf("Carattere inizio: %c\tstato inizio: %hhd\n", c, statoAutoma);
 	
 	//se è una parentesi per la composizione
 	char utile=statoAutoma==STATO_PARENTESI;
@@ -319,7 +319,7 @@ char Parentesi(char* esp, size_t *caratteriProcessati, struct AutomaSintassi *a)
 		if(c=='('){
 			size_t cpSotto=0;
 			char utileSottoParentesi=Parentesi(espTmp,&cpSotto,a);
-			printf("utile: %hhd\tprocessati: %lu\n", utileSottoParentesi,cpSotto);
+			//printf("utile: %hhd\tprocessati: %lu\n", utileSottoParentesi,cpSotto);
 			espTmp += cpSotto;
 			cp += cpSotto;
 			c=*espTmp;
@@ -333,7 +333,7 @@ char Parentesi(char* esp, size_t *caratteriProcessati, struct AutomaSintassi *a)
 		statoAutoma=InputAutoma(a,c);
 		c=*++espTmp;
 		cp++;
-		printf("stato P: %hhd\n", statoAutoma);
+		//printf("stato P: %hhd\n", statoAutoma);
 	}
 
 	// + (c==')' ? 1 : 0)
@@ -353,7 +353,7 @@ void SemplificaEspressione(char* esp, struct AutomaSintassi *a){
 		if(c=='('){
 			size_t cp=0;
 			char p=Parentesi(espTmp,&cp,a);
-			printf("utile: %hhd\tprocessati: %lu\n", p,cp);
+			//printf("utile: %hhd\tprocessati: %lu\n", p,cp);
 			espTmp += cp;
 			c=*espTmp;
 			
@@ -363,9 +363,9 @@ void SemplificaEspressione(char* esp, struct AutomaSintassi *a){
 				*espTmp=0x01;
 			}
 		}
-		printf("carattere: %c\n", c);
+		//printf("carattere: %c\n", c);
 		char s=InputAutoma(a,c);
-		printf("stato S: %hhd\n", s);
+		//printf("stato S: %hhd\n", s);
 		c=*++espTmp;
 	}
 }

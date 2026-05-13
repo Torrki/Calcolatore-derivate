@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
 		
 		DeallocaAlbero(radiceAlberoSintassi);
 	}else{
-		printf("Errore nella sintassi della stringa al carattere %ld\n", i+1);
+		printf("Errore nella sintassi della stringa al carattere %ld\n", i);
 	}
 	
 	CancellaAutoma(Automa);

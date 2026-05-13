@@ -24,6 +24,7 @@ struct AutomaSintassi{
 	struct Stato* statoIniziale;
 	size_t numeroStati;
 	int parentesi;
+	char meno;
 };
 
 /*! \fn void CreaAutoma()
