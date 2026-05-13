@@ -221,10 +221,12 @@ const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice){
 					}
 					break;
 				case '-':
+					OpSx=AlberotoStr(radice.no->n1);
 					stringaDerivata=(char*)malloc(sizeof(char)*(dimSx+dimDx+6));
+					printf("%s\n",OpSx);
 					
 					if(numeroSx || numeroDx){
-						sprintf(stringaDerivata,"%s",numeroSx ? derivataOpDx : derivataOpSx);
+						sprintf(stringaDerivata,"%s%s", strcmp(OpSx,"")==0 ? "-" : "", numeroSx ? derivataOpDx : derivataOpSx);
 					}else{
 						sprintf(stringaDerivata,"(%s)-(%s)",derivataOpSx,derivataOpDx);
 					}
@@ -315,7 +317,7 @@ char Parentesi(char* esp, size_t *caratteriProcessati, struct AutomaSintassi *a)
 	statoAutoma=InputAutoma(a,'(');
 
 	while(c != '\0' && c != ')'){
-		if(!utile) utile= statoAutoma==STATO_OPERATORI;
+		if(!utile) utile= statoAutoma==STATO_OPERATORI || (statoAutoma==STATO_INIZIALE && c == '-');
 		if(c=='('){
 			size_t cpSotto=0;
 			char utileSottoParentesi=Parentesi(espTmp,&cpSotto,a);
