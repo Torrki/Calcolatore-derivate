@@ -79,3 +79,4 @@ Nodo CreaAlbero(struct AutomaSintassi *a, const char* funzioneSym, size_t* numer
 void DeallocaAlbero(Nodo radice);
 const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice);
 const char* AlberotoStr(Nodo n);
+void SemplificaEspressione(char* esp, struct AutomaSintassi *a);

@@ -1,9 +1,12 @@
 #include <AlberoSintassi.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int operatore(char c);
 int prioritaOperatori(char uo, char o);
+char Parentesi(char* esp,size_t *caratteriProcessati, struct AutomaSintassi *a);
+
 const char* ordineOperatori=".@^/*+-";
 
 char SoloNumeri(const char* stringa);
@@ -277,7 +280,10 @@ const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice){
 					if(numeroSx && !numeroDx){
 						sprintf(stringaDerivata,"(%s^(%s))*(%s)*ln(%s)",OpSx,OpDx,derivataOpDx,OpSx);
 					}else if(numeroDx && !numeroSx){
-						sprintf(stringaDerivata,"((%s)^%s)*%s*((%s)/(%s))",OpSx,OpDx,OpDx,derivataOpSx,OpSx);
+						int esponente=atoi(OpDx);
+						
+						//Se esponente intero
+						sprintf(stringaDerivata,"(%d*(%s)^%d)*(%s)",esponente,OpSx,esponente-1,derivataOpSx);
 					}else{
 						sprintf(stringaDerivata,"((%s)^(%s))*((%s)*ln(%s)+(%s)*((%s)/(%s)))",OpSx,OpDx,derivataOpDx,OpSx,OpDx,derivataOpSx,OpSx);
 					}
@@ -296,6 +302,72 @@ const char* AnalizzaAlbero(struct Tabella* tabella, Nodo radice){
 		}
 	}
 	return stringaDerivata;
+}
+
+char Parentesi(char* esp, size_t *caratteriProcessati, struct AutomaSintassi *a){
+	char* espTmp=esp+1;
+	char c=*espTmp, statoAutoma=StatoCorrenteAutoma(a);
+	size_t cp=1; //la parentesi aperta d'inizio
+	printf("Carattere inizio: %c\tstato inizio: %hhd\n", c, statoAutoma);
+	
+	//se è una parentesi per la composizione
+	char utile=statoAutoma==STATO_PARENTESI;
+	statoAutoma=InputAutoma(a,'(');
+
+	while(c != '\0' && c != ')'){
+		if(!utile) utile= statoAutoma==STATO_OPERATORI;
+		if(c=='('){
+			size_t cpSotto=0;
+			char utileSottoParentesi=Parentesi(espTmp,&cpSotto,a);
+			printf("utile: %hhd\tprocessati: %lu\n", utileSottoParentesi,cpSotto);
+			espTmp += cpSotto;
+			cp += cpSotto;
+			c=*espTmp;
+			
+			//sostituisco le parentesi
+			if(!utileSottoParentesi){
+				*(espTmp-cpSotto)=0x01; //carattere non stampato, non ha alcun effetto su tutta la stringa
+				*espTmp=0x01;
+			}
+		}
+		statoAutoma=InputAutoma(a,c);
+		c=*++espTmp;
+		cp++;
+		printf("stato P: %hhd\n", statoAutoma);
+	}
+
+	// + (c==')' ? 1 : 0)
+	*caratteriProcessati=cp;
+	return utile;
+}
+
+void SemplificaEspressione(char* esp, struct AutomaSintassi *a){
+	size_t lunghezzaEsp=strlen(esp);
+	//char* espSemplificata=(char*)malloc(sizeof(char)*(lunghezzaEsp+1));
+	char* espTmp=esp;
+	char c=*espTmp;
+	
+	//elimino le parentesi in eccesso
+	ResetAutoma(a);
+	while(c){
+		if(c=='('){
+			size_t cp=0;
+			char p=Parentesi(espTmp,&cp,a);
+			printf("utile: %hhd\tprocessati: %lu\n", p,cp);
+			espTmp += cp;
+			c=*espTmp;
+			
+			//sostituisco le parentesi
+			if(!p){
+				*(espTmp-cp)=0x01; //carattere non stampato, non ha alcun effetto su tutta la stringa
+				*espTmp=0x01;
+			}
+		}
+		printf("carattere: %c\n", c);
+		char s=InputAutoma(a,c);
+		printf("stato S: %hhd\n", s);
+		c=*++espTmp;
+	}
 }
 
 int operatore(char c){

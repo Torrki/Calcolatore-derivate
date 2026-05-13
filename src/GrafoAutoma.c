@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define INPUT_INIZIALE_BASE " (x0123456789"
+#define INPUT_INIZIALE_BASE " (-x0123456789"
 #define INPUT_OPERATORI ") ^*+/-0123456789"
 
 void CollegamentoVertici(struct Stato* v1, struct Stato* v2, char input);
@@ -31,7 +31,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	//collegamenti input base
 	vertice0->statiSuccessivi[0]=vertice0;
 	vertice0->statiSuccessivi[1]=vertice0;
-	vertice0->statiSuccessivi[2]=verticeOperatori;
+	vertice0->statiSuccessivi[2]=vertice0;
 	vertice0->statiSuccessivi[3]=verticeOperatori;
 	vertice0->statiSuccessivi[4]=verticeOperatori;
 	vertice0->statiSuccessivi[5]=verticeOperatori;
@@ -42,6 +42,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	vertice0->statiSuccessivi[10]=verticeOperatori;
 	vertice0->statiSuccessivi[11]=verticeOperatori;
 	vertice0->statiSuccessivi[12]=verticeOperatori;
+	vertice0->statiSuccessivi[13]=verticeOperatori;
 	
 	//stato finale delle funzioni
 	verticeFinale->s=1;
@@ -117,7 +118,7 @@ struct AutomaSintassi* CreaAutoma(struct Tabella* tabella){
 	automa->statoCorrente=vertice0;
 	automa->numeroStati=numeroStati;
 	automa->parentesi=0;
-	printf("Numero stati: %lu\n", numeroStati);
+	//printf("Numero stati: %lu\n", numeroStati);
 	
 	return automa;
 }

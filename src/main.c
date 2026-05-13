@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <AlberoSintassi.h>
 
-int operatore(char c);
-int prioritaOperatori(char uo, char o);
-
 int main(int argc, char* argv[]){
 	char* stringaInput=NULL;
 	size_t dimensioneStringa=0;
@@ -42,6 +39,7 @@ int main(int argc, char* argv[]){
 		StampaAlbero(radiceAlberoSintassi,0);
 		
 		const char* derivataFunzione=AnalizzaAlbero(TabellaDerivate,radiceAlberoSintassi);
+		SemplificaEspressione((char*)derivataFunzione,Automa);
 		printf("\n\nLa derivata: %s\n", derivataFunzione);
 		
 		DeallocaAlbero(radiceAlberoSintassi);
